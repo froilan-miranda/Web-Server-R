@@ -1,3 +1,4 @@
+use web_server::ThreadPool;
 use std::{
     fs,
     io::{prelude::*, BufReader},
@@ -14,6 +15,7 @@ fn main() {
       TODO: add error handling
     */
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
 
     /*
       The incoming method on TcpListener returns an iterator that gives us a sequence of streams 
@@ -26,7 +28,9 @@ fn main() {
     for streams in listener.incoming() {
         let stream = streams.unwrap();
 
-        thread::spawn(|| { handle_connection(stream); });
+        pool.execute(|| {
+            handle_connection(stream);
+        })
     }
 }
 
