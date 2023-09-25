@@ -8,6 +8,8 @@ impl ThreadPool {
     threads, which is what the usize type is for
     */
     pub fn new(size: usize) -> ThreadPool {
+        assert!(size > 0);
+
         ThreadPool
     }
 
