@@ -2,6 +2,7 @@ use std::{
     fs,
     io::{prelude::*, BufReader},
     net::{TcpListener, TcpStream},
+    thread,
 };
 
 fn main() {
@@ -25,7 +26,7 @@ fn main() {
     for streams in listener.incoming() {
         let stream = streams.unwrap();
 
-        handle_connection(stream);
+        thread::spawn(|| { handle_connection(stream); });
     }
 }
 
