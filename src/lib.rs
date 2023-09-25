@@ -23,7 +23,7 @@ impl ThreadPool {
 
         for id in 0..size {
             // create some threads and store them in a vector
-            workers.push(Worker::new(id));
+            workers.push(Worker::new(id, receiver));
         }
         ThreadPool { workers, sender }
     }
@@ -42,8 +42,8 @@ pub struct Worker {
 }
 
 impl Worker {
-    pub fn new(id: usize) -> Worker {
-        let thread = thread::spawn(|| {});
+    pub fn new(id: usize, receiver: mpsc::Receiver<Job>) -> Worker {
+        let thread = thread::spawn(|| { receiver });
         Worker { id, thread }
     }
 }
