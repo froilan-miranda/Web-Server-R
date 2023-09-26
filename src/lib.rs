@@ -50,14 +50,16 @@ impl Drop for ThreadPool {
         for worker in &mut self.workers{
             println!("Shutting down worker {}", worker.id);
 
-            worker.thread.join().unwwrap();
+            if let Some(thread) = worker.thread.take(){
+                thread.join().unwrap();
+            }
         }
     }
 }
 
 pub struct Worker {
     id: usize,
-    thread: thread::JoinHandle<Arc<Mutex<std::sync::mpsc::Receiver<Job>>>>,
+    thread: Option<thread::JoinHandle<()>>, 
 }
 
 impl Worker {
@@ -70,6 +72,9 @@ impl Worker {
             job();
         });
 
-        Worker { id, thread }
+        Worker { 
+            id, 
+            thread: Some(thread)
+        }
     }
 }
