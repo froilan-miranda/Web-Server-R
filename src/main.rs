@@ -24,13 +24,15 @@ fn main() {
       A connection is the name for the full request and response process in which a client connects 
       to the server, the server generates a response, and the server closes the connection.
     */
-    for streams in listener.incoming() {
+    for streams in listener.incoming().take(2) {
         let stream = streams.unwrap();
 
         pool.execute(|| {
             handle_connection(stream);
         })
     }
+
+    println!("Shutting down.");
 }
 
 /*

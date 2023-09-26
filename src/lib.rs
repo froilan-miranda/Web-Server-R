@@ -31,7 +31,7 @@ impl ThreadPool {
             workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
 
-        ThreadPool { workers, Some(sender) }
+        ThreadPool { workers, sender: Some(sender) }
     }
 
     pub fn execute<F>(&self, f: F)
@@ -47,7 +47,7 @@ impl ThreadPool {
 
 impl Drop for ThreadPool {
     fn drop(&mut self) {
-        drop(sef.sender.take());
+        drop(self.sender.take());
 
         for worker in &mut self.workers{
             println!("Shutting down worker {}", worker.id);
